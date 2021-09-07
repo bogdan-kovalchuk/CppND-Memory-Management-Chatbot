@@ -33,21 +33,25 @@ ChatBot::ChatBot(std::string filename)
 // copy constructor
 ChatBot::ChatBot(const ChatBot &other)
 {
+    std::cout << "ChatBot Сopy Сonstructor" << std::endl;
 }
 
 // move costractor
 ChatBot::ChatBot(ChatBot &&other)
 {
+    std::cout << "ChatBot Move Сonstructor" << std::endl;
 }
 
 // copy assigment
-ChatBot::ChatBot &ChatBot::operator=(const ChatBot &other)
+ChatBot &ChatBot::operator=(const ChatBot &other)
 {
+    std::cout << "ChatBot Copy Assigment Operator" << std::endl;
 }
 
 // move assigment
 ChatBot &ChatBot::operator=(ChatBot &&other)
 {
+    std::cout << "ChatBot Move Assigment Operator" << std::endl;
     if (this == &other)
         return *this;
 }
