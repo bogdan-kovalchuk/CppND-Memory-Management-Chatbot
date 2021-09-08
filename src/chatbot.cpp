@@ -34,26 +34,56 @@ ChatBot::ChatBot(std::string filename)
 ChatBot::ChatBot(const ChatBot &other)
 {
     std::cout << "ChatBot Сopy Сonstructor" << std::endl;
+    _chatLogic = other._chatLogic;
+    _rootNode = other._rootNode;
+    _image = other._image;
 }
 
 // move costractor
 ChatBot::ChatBot(ChatBot &&other)
 {
     std::cout << "ChatBot Move Сonstructor" << std::endl;
+
+    _chatLogic = std::move(other._chatLogic);
+    _rootNode = std::move(other._rootNode);
+    _image = std::move(other._image);
+
+    // invalidate data handles
+    other._chatLogic = nullptr;
+    other._rootNode = nullptr;
+    other._image = nullptr;
 }
 
 // copy assigment
 ChatBot &ChatBot::operator=(const ChatBot &other)
 {
     std::cout << "ChatBot Copy Assigment Operator" << std::endl;
+
+    _chatLogic = other._chatLogic;
+    _rootNode = other._rootNode;
+    _image = other._image;
+
+    return *this;
 }
 
 // move assigment
 ChatBot &ChatBot::operator=(ChatBot &&other)
 {
     std::cout << "ChatBot Move Assigment Operator" << std::endl;
+
     if (this == &other)
         return *this;
+
+    _chatLogic = std::move(other._chatLogic);
+    _rootNode = std::move(other._rootNode);
+    _image = std::move(other._image);
+
+    // invalidate data handles
+    other._chatLogic = nullptr;
+    other._rootNode = nullptr;
+    other._image = nullptr;
+
+    return *this;
 }
 
 ChatBot::~ChatBot()
