@@ -21,7 +21,7 @@ ChatBot::ChatBot()
 ChatBot::ChatBot(std::string filename)
 {
     std::cout << "ChatBot Constructor" << std::endl;
-
+    
     // invalidate data handles
     _chatLogic = nullptr;
     _rootNode = nullptr;
@@ -30,73 +30,23 @@ ChatBot::ChatBot(std::string filename)
     _image = new wxBitmap(filename, wxBITMAP_TYPE_PNG);
 }
 
-// copy constructor
-ChatBot::ChatBot(const ChatBot &other)
-{
-    std::cout << "ChatBot Сopy Сonstructor" << std::endl;
-    _chatLogic = other._chatLogic;
-    _rootNode = other._rootNode;
-    _image = other._image;
-}
-
-// move costractor
-ChatBot::ChatBot(ChatBot &&other)
-{
-    std::cout << "ChatBot Move Сonstructor" << std::endl;
-
-    _chatLogic = std::move(other._chatLogic);
-    _rootNode = std::move(other._rootNode);
-    _image = std::move(other._image);
-
-    // invalidate data handles
-    other._chatLogic = nullptr;
-    other._rootNode = nullptr;
-    other._image = nullptr;
-}
-
-// copy assigment
-ChatBot &ChatBot::operator=(const ChatBot &other)
-{
-    std::cout << "ChatBot Copy Assigment Operator" << std::endl;
-
-    _chatLogic = other._chatLogic;
-    _rootNode = other._rootNode;
-    _image = other._image;
-
-    return *this;
-}
-
-// move assigment
-ChatBot &ChatBot::operator=(ChatBot &&other)
-{
-    std::cout << "ChatBot Move Assigment Operator" << std::endl;
-
-    if (this == &other)
-        return *this;
-
-    _chatLogic = std::move(other._chatLogic);
-    _rootNode = std::move(other._rootNode);
-    _image = std::move(other._image);
-
-    // invalidate data handles
-    other._chatLogic = nullptr;
-    other._rootNode = nullptr;
-    other._image = nullptr;
-
-    return *this;
-}
-
 ChatBot::~ChatBot()
 {
     std::cout << "ChatBot Destructor" << std::endl;
 
     // deallocate heap memory
-    if (_image != NULL) // Attention: wxWidgets used NULL and not nullptr
+    if(_image != NULL) // Attention: wxWidgets used NULL and not nullptr
     {
         delete _image;
         _image = NULL;
     }
 }
+
+//// STUDENT CODE
+////
+
+////
+//// EOF STUDENT CODE
 
 void ChatBot::ReceiveMessageFromUser(std::string message)
 {
@@ -119,8 +69,7 @@ void ChatBot::ReceiveMessageFromUser(std::string message)
     if (levDists.size() > 0)
     {
         // sort in ascending order of Levenshtein distance (best fit is at the top)
-        std::sort(levDists.begin(), levDists.end(), [](const EdgeDist &a, const EdgeDist &b)
-                  { return a.second < b.second; });
+        std::sort(levDists.begin(), levDists.end(), [](const EdgeDist &a, const EdgeDist &b) { return a.second < b.second; });
         newNode = levDists.at(0).first->GetChildNode(); // after sorting the best edge is at first position
     }
     else
