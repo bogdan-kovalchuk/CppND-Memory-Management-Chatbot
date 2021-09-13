@@ -83,7 +83,7 @@ ChatBot::ChatBot(ChatBot &&other)
 {
     std::cout << "ChatBot Move Constructor" << std::endl;
 
-    _image = new wxBitmap(*other._image);
+    _image = other._image;;
     _currentNode = other._currentNode;
     _rootNode = other._rootNode;
     _chatLogic = other._chatLogic;
@@ -109,7 +109,7 @@ ChatBot &ChatBot::operator=(ChatBot &&other)
         delete _image;
     }
 
-    _image = new wxBitmap(*other._image);
+    _image = other._image;;
     _currentNode = other._currentNode;
     _rootNode = other._rootNode;
     _chatLogic = other._chatLogic;
