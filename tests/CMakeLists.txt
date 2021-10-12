@@ -13,3 +13,9 @@ add_executable(test_ownership_characterization
     levenshtein.cpp
 )
 add_test(NAME ownership_characterization COMMAND test_ownership_characterization)
+
+add_executable(test_ownership_edge_cases
+    test_ownership_edge_cases.cpp
+    levenshtein.cpp
+)
+add_test(NAME ownership_edge_cases COMMAND test_ownership_edge_cases)
