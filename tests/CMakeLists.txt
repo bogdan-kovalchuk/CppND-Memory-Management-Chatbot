@@ -25,3 +25,9 @@ add_executable(test_exclusive_handle
 )
 target_include_directories(test_exclusive_handle PRIVATE ${CMAKE_SOURCE_DIR}/../src)
 add_test(NAME exclusive_handle COMMAND test_exclusive_handle)
+
+add_executable(test_chatbot_integration
+    test_chatbot_integration.cpp
+)
+target_include_directories(test_chatbot_integration PRIVATE ${CMAKE_SOURCE_DIR}/../src)
+add_test(NAME chatbot_integration COMMAND test_chatbot_integration)
