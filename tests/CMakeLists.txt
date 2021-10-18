@@ -19,3 +19,9 @@ add_executable(test_ownership_edge_cases
     levenshtein.cpp
 )
 add_test(NAME ownership_edge_cases COMMAND test_ownership_edge_cases)
+
+add_executable(test_exclusive_handle
+    test_exclusive_handle.cpp
+)
+target_include_directories(test_exclusive_handle PRIVATE ${CMAKE_SOURCE_DIR}/../src)
+add_test(NAME exclusive_handle COMMAND test_exclusive_handle)
