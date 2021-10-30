@@ -48,7 +48,8 @@ ChatBot::ChatBot(const ChatBot &other)
       _chatLogic(other._chatLogic)
 {
     std::cout << "ChatBot Copy Constructor" << std::endl;
-    _chatLogic->SetChatbotHandle(this);
+    if (_chatLogic)
+        _chatLogic->SetChatbotHandle(this);
 }
 
 ChatBot &ChatBot::operator=(const ChatBot &other)
@@ -64,7 +65,8 @@ ChatBot &ChatBot::operator=(const ChatBot &other)
     _currentNode = other._currentNode;
     _rootNode = other._rootNode;
     _chatLogic = other._chatLogic;
-    _chatLogic->SetChatbotHandle(this);
+    if (_chatLogic)
+        _chatLogic->SetChatbotHandle(this);
 
     return *this;
 }
@@ -76,7 +78,8 @@ ChatBot::ChatBot(ChatBot &&other)
       _chatLogic(other._chatLogic)
 {
     std::cout << "ChatBot Move Constructor" << std::endl;
-    _chatLogic->SetChatbotHandle(this);
+    if (_chatLogic)
+        _chatLogic->SetChatbotHandle(this);
 
     other._currentNode = nullptr;
     other._rootNode = nullptr;
@@ -96,7 +99,8 @@ ChatBot &ChatBot::operator=(ChatBot &&other)
     _currentNode = other._currentNode;
     _rootNode = other._rootNode;
     _chatLogic = other._chatLogic;
-    _chatLogic->SetChatbotHandle(this);
+    if (_chatLogic)
+        _chatLogic->SetChatbotHandle(this);
 
     other._currentNode = nullptr;
     other._rootNode = nullptr;
@@ -110,6 +114,9 @@ ChatBot &ChatBot::operator=(ChatBot &&other)
 
 void ChatBot::ReceiveMessageFromUser(std::string message)
 {
+    if (!_currentNode)
+        return;
+
     // loop over all edges and keywords and compute Levenshtein distance to query
     typedef std::pair<GraphEdge *, int> EdgeDist;
     std::vector<EdgeDist> levDists; // format is <ptr,levDist>
@@ -130,7 +137,7 @@ void ChatBot::ReceiveMessageFromUser(std::string message)
     {
         // sort in ascending order of Levenshtein distance (best fit is at the top)
         std::sort(levDists.begin(), levDists.end(), [](const EdgeDist &a, const EdgeDist &b)
-                  { return a.second < b.second; });
+                   { return a.second < b.second; });
         newNode = levDists.at(0).first->GetChildNode(); // after sorting the best edge is at first position
     }
     else
@@ -145,6 +152,9 @@ void ChatBot::ReceiveMessageFromUser(std::string message)
 
 void ChatBot::SetCurrentNode(GraphNode *node)
 {
+    if (!node)
+        return;
+
     // update pointer to current node
     _currentNode = node;
 
@@ -155,7 +165,8 @@ void ChatBot::SetCurrentNode(GraphNode *node)
     std::string answer = answers.at(dis(generator));
 
     // send selected node answer to user
-    _chatLogic->SendMessageToUser(answer);
+    if (_chatLogic)
+        _chatLogic->SendMessageToUser(answer);
 }
 
 int ChatBot::ComputeLevenshteinDistance(std::string s1, std::string s2)
