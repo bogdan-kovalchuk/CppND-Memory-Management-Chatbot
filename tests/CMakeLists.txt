@@ -36,3 +36,8 @@ add_executable(test_graphnode_move
     test_graphnode_move.cpp
 )
 add_test(NAME graphnode_move COMMAND test_graphnode_move)
+
+add_executable(test_graphnode_move_edge_cases
+    test_graphnode_move_edge_cases.cpp
+)
+add_test(NAME graphnode_move_edge_cases COMMAND test_graphnode_move_edge_cases)
