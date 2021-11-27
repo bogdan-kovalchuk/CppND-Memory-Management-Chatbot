@@ -31,3 +31,8 @@ add_executable(test_chatbot_integration
 )
 target_include_directories(test_chatbot_integration PRIVATE ${CMAKE_SOURCE_DIR}/../src)
 add_test(NAME chatbot_integration COMMAND test_chatbot_integration)
+
+add_executable(test_graphnode_move
+    test_graphnode_move.cpp
+)
+add_test(NAME graphnode_move COMMAND test_graphnode_move)
