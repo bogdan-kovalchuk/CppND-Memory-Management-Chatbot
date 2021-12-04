@@ -1,5 +1,6 @@
 #include "graphedge.h"
 #include "graphnode.h"
+#include <utility>
 
 GraphNode::GraphNode(int id)
 {
@@ -36,7 +37,7 @@ void GraphNode::AddEdgeToChildNode(std::unique_ptr<GraphEdge> edge)
 ////
 void GraphNode::MoveChatbotHere(ChatBot chatbot)
 {
-    _chatBot = std::move(chatbot);
+    std::swap(_chatBot, chatbot);
     _chatBot.SetCurrentNode(this);
 }
 
