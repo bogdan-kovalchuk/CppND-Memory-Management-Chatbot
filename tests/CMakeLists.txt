@@ -41,3 +41,8 @@ add_executable(test_graphnode_move_edge_cases
     test_graphnode_move_edge_cases.cpp
 )
 add_test(NAME graphnode_move_edge_cases COMMAND test_graphnode_move_edge_cases)
+
+add_executable(test_graphnode_move_comparison
+    test_graphnode_move_comparison.cpp
+)
+add_test(NAME graphnode_move_comparison COMMAND test_graphnode_move_comparison)
