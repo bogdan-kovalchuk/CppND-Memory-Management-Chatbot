@@ -43,7 +43,8 @@ void GraphNode::MoveChatbotHere(ChatBot chatbot)
 
 void GraphNode::MoveChatbotToNewNode(GraphNode *newNode)
 {
-    newNode->MoveChatbotHere(_chatBot);
+    if (newNode)
+        newNode->MoveChatbotHere(_chatBot);
 }
 ////
 //// EOF STUDENT CODE
