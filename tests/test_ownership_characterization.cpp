@@ -155,6 +155,20 @@ static void test_move_assignment_transfers() {
     std::cout << "  PASS: move assignment transfers and nulls source\n";
 }
 
+static void test_copy_remains_independent_after_original_moves() {
+    ChatBotModel original("independent.png");
+    ChatBotModel copied(original);
+
+    ChatBotModel moved(std::move(original));
+
+    assert(copied.image != nullptr);
+    assert(copied.image != moved.image);
+    assert(std::strcmp(copied.image->data, "independent.png") == 0);
+    assert(moved.image != nullptr);
+    assert(original.image == nullptr);
+    std::cout << "  PASS: copied image remains independent after original moves\n";
+}
+
 int main() {
     std::cout << "ChatBot ownership characterization:\n";
     test_levenshtein_basic();
@@ -162,6 +176,7 @@ int main() {
     test_raw_pointer_ownership_move();
     test_copy_assignment_replaces_image();
     test_move_assignment_transfers();
+    test_copy_remains_independent_after_original_moves();
     std::cout << "All characterization tests passed.\n";
     return 0;
 }
