@@ -145,6 +145,19 @@ static void test_move_assign_releases_old_image() {
     std::cout << "  PASS: move-assign releases old destination image\n";
 }
 
+static void test_second_move_from_source_keeps_destination_valid() {
+    ChatBotModel source("stable.png");
+    ChatBotModel destination(std::move(source));
+
+    ChatBotModel later(std::move(source));
+
+    assert(destination.image != nullptr);
+    assert(std::strcmp(destination.image->data, "stable.png") == 0);
+    assert(source.image == nullptr);
+    assert(later.image == nullptr);
+    std::cout << "  PASS: second move from source keeps destination valid\n";
+}
+
 int main() {
     std::cout << "ChatBot ownership edge cases:\n";
     test_copy_from_null_image_is_unsafe();
@@ -153,6 +166,7 @@ int main() {
     test_double_move_leaves_source_empty();
     test_levenshtein_single_char();
     test_move_assign_releases_old_image();
+    test_second_move_from_source_keeps_destination_valid();
     std::cout << "All edge case tests passed.\n";
     return 0;
 }
