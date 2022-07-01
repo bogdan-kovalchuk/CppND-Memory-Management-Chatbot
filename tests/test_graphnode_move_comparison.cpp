@@ -170,6 +170,24 @@ static void test_both_approaches_empty_bot_transfer() {
     std::cout << "  PASS: both approaches handle empty bot transfer identically\n";
 }
 
+static void test_both_approaches_replace_populated_destinations() {
+    NodeMoveAssign assignSource(1), assignDestination(2);
+    assignSource.moveChatbotHere(MockChatBot("new.png"));
+    assignDestination.moveChatbotHere(MockChatBot("old.png"));
+    assignSource.moveChatbotToNewNode(&assignDestination);
+
+    NodeSwap swapSource(1), swapDestination(2);
+    swapSource.moveChatbotHere(MockChatBot("new.png"));
+    swapDestination.moveChatbotHere(MockChatBot("old.png"));
+    swapSource.moveChatbotToNewNode(&swapDestination);
+
+    assert(std::strcmp(assignDestination.chatBot.image.data, "new.png") == 0);
+    assert(std::strcmp(swapDestination.chatBot.image.data, "new.png") == 0);
+    assert(assignSource.chatBot.image.data == nullptr);
+    assert(swapSource.chatBot.image.data == nullptr);
+    std::cout << "  PASS: both approaches replace populated destinations\n";
+}
+
 int main() {
     std::cout << "GraphNode move approach comparison:\n";
     test_both_approaches_transfer_image();
@@ -177,6 +195,7 @@ int main() {
     test_both_approaches_chain_transfer();
     test_swap_self_transfer_differs();
     test_both_approaches_empty_bot_transfer();
+    test_both_approaches_replace_populated_destinations();
     std::cout << "All comparison tests passed.\n";
     return 0;
 }
