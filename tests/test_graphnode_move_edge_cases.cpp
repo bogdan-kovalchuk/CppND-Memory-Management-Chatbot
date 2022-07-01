@@ -172,6 +172,21 @@ static void test_sequential_transfers_through_chain() {
     std::cout << "  PASS: sequential transfers through node chain\n";
 }
 
+static void test_transfer_replaces_populated_destination_safely() {
+    GraphNodeModel source(1);
+    GraphNodeModel destination(2);
+    source.moveChatbotHere(MockChatBot("source.png"));
+    destination.moveChatbotHere(MockChatBot("destination.png"));
+
+    source.moveChatbotToNewNode(&destination);
+
+    assert(destination.chatBot.image.data != nullptr);
+    assert(std::strcmp(destination.chatBot.image.data, "source.png") == 0);
+    assert(destination.chatBot.currentNode == &destination.id);
+    assert(source.chatBot.image.data == nullptr);
+    std::cout << "  PASS: transfer safely replaces populated destination\n";
+}
+
 int main() {
     std::cout << "GraphNode move edge cases:\n";
     test_move_empty_chatbot_between_nodes();
@@ -180,6 +195,7 @@ int main() {
     test_move_from_moved_node();
     test_node_move_preserves_parent_edge_pointers();
     test_sequential_transfers_through_chain();
+    test_transfer_replaces_populated_destination_safely();
     std::cout << "All graph-node edge case tests passed.\n";
     return 0;
 }
