@@ -189,6 +189,23 @@ static void test_chatbot_current_node_pointer_updates() {
     std::cout << "  PASS: chatbot currentNode pointer updates on transfer\n";
 }
 
+static void test_transfer_chain_clears_intermediate_nodes() {
+    GraphNodeModel first(1);
+    GraphNodeModel middle(2);
+    GraphNodeModel last(3);
+    first.moveChatbotHere(MockChatBot("chain.png"));
+
+    first.moveChatbotToNewNode(&middle);
+    middle.moveChatbotToNewNode(&last);
+
+    assert(first.chatBot.image.data == nullptr);
+    assert(middle.chatBot.image.data == nullptr);
+    assert(last.chatBot.image.data != nullptr);
+    assert(std::strcmp(last.chatBot.image.data, "chain.png") == 0);
+    assert(last.chatBot.currentNode == &last.id);
+    std::cout << "  PASS: transfer chain clears intermediate nodes\n";
+}
+
 int main() {
     std::cout << "GraphNode move semantics characterization:\n";
     test_node_default_has_empty_chatbot();
@@ -197,6 +214,7 @@ int main() {
     test_node_move_constructor_transfers_edges();
     test_node_move_assignment_replaces();
     test_chatbot_current_node_pointer_updates();
+    test_transfer_chain_clears_intermediate_nodes();
     std::cout << "All graph-node characterization tests passed.\n";
     return 0;
 }
