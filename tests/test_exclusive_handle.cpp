@@ -110,6 +110,20 @@ static void test_reset_replaces_resource() {
     std::cout << "  PASS: reset replaces resource\n";
 }
 
+static void test_release_then_reset_owns_replacement() {
+    ExclusiveHandle<Payload> handle(new Payload("released"), Payload::clone);
+    Payload *released = handle.release();
+
+    assert(!handle);
+    assert(released != nullptr);
+    delete released;
+
+    handle.reset(new Payload("replacement"));
+    assert(handle);
+    assert(std::strcmp(handle->data, "replacement") == 0);
+    std::cout << "  PASS: release leaves no ownership before reset replacement\n";
+}
+
 static void test_swap_exchanges() {
     ExclusiveHandle<Payload> a(new Payload("A"), Payload::clone);
     ExclusiveHandle<Payload> b(new Payload("B"), Payload::clone);
@@ -140,6 +154,7 @@ int main() {
     test_self_move_assign_is_safe();
     test_release_yields_ownership();
     test_reset_replaces_resource();
+    test_release_then_reset_owns_replacement();
     test_swap_exchanges();
     test_copy_without_clone_is_null();
     std::cout << "All ExclusiveHandle tests passed.\n";
