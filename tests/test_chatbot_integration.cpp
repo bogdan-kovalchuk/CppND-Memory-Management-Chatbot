@@ -151,6 +151,28 @@ static void test_chatbot_self_move_assign_preserves() {
     std::cout << "  PASS: ChatBot self move-assign preserves state\n";
 }
 
+static void test_copy_move_sequence_preserves_image_and_node_handles() {
+    int current = 7;
+    int root = 9;
+    ChatBotLike original("sequence.png");
+    original.currentNode = &current;
+    original.rootNode = &root;
+
+    ChatBotLike copied(original);
+    ChatBotLike moved(std::move(original));
+
+    assert(copied.image.get() != moved.image.get());
+    assert(std::strcmp(copied.image->pixels, "sequence.png") == 0);
+    assert(std::strcmp(moved.image->pixels, "sequence.png") == 0);
+    assert(copied.currentNode == &current);
+    assert(copied.rootNode == &root);
+    assert(moved.currentNode == &current);
+    assert(moved.rootNode == &root);
+    assert(original.currentNode == nullptr);
+    assert(original.rootNode == nullptr);
+    std::cout << "  PASS: copy and move preserve intended ownership and node handles\n";
+}
+
 int main() {
     std::cout << "ChatBot integration with ExclusiveHandle:\n";
     test_chatbot_default_has_null_image();
@@ -161,6 +183,7 @@ int main() {
     test_chatbot_move_assign_releases_old();
     test_chatbot_self_copy_assign_preserves();
     test_chatbot_self_move_assign_preserves();
+    test_copy_move_sequence_preserves_image_and_node_handles();
     std::cout << "All integration tests passed.\n";
     return 0;
 }
