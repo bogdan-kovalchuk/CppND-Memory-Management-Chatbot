@@ -54,6 +54,7 @@ public:
     }
 
     void reset(T *raw = nullptr) noexcept {
+        if (raw == ptr_) return; // avoid freeing ptr_ then reassigning the dangling address
         delete ptr_;
         ptr_ = raw;
     }
