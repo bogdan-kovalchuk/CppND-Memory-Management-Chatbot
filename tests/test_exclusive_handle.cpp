@@ -110,6 +110,17 @@ static void test_reset_replaces_resource() {
     std::cout << "  PASS: reset replaces resource\n";
 }
 
+static void test_self_reset_is_safe() {
+    ExclusiveHandle<Payload> a(new Payload("self-reset"), Payload::clone);
+    Payload *raw = a.get();
+
+    a.reset(a.get());
+
+    assert(a.get() == raw);
+    assert(std::strcmp(a->data, "self-reset") == 0);
+    std::cout << "  PASS: reset with its own pointer is a safe no-op\n";
+}
+
 static void test_release_then_reset_owns_replacement() {
     ExclusiveHandle<Payload> handle(new Payload("released"), Payload::clone);
     Payload *released = handle.release();
@@ -154,6 +165,7 @@ int main() {
     test_self_move_assign_is_safe();
     test_release_yields_ownership();
     test_reset_replaces_resource();
+    test_self_reset_is_safe();
     test_release_then_reset_owns_replacement();
     test_swap_exchanges();
     test_copy_without_clone_is_null();
