@@ -2,6 +2,7 @@
 #include "graphedge.h"
 
 GraphEdge::GraphEdge(int id)
+    : _childNode(nullptr), _parentNode(nullptr)
 {
     _id = id;
 }
