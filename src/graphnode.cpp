@@ -43,8 +43,11 @@ void GraphNode::MoveChatbotHere(ChatBot chatbot)
 
 void GraphNode::MoveChatbotToNewNode(GraphNode *newNode)
 {
+    // without std::move, the by-value parameter of MoveChatbotHere binds to
+    // the copy constructor, deep-cloning the avatar image on every transfer
+    // instead of moving it as documented in docs/ownership.md.
     if (newNode)
-        newNode->MoveChatbotHere(_chatBot);
+        newNode->MoveChatbotHere(std::move(_chatBot));
 }
 ////
 //// EOF STUDENT CODE
