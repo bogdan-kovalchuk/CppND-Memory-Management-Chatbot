@@ -13,6 +13,7 @@
 
 
 ChatLogic::ChatLogic()
+    : _currentNode(nullptr), _chatBot(nullptr), _panelDialog(nullptr)
 {
     //// STUDENT CODE
     ////
@@ -192,23 +193,25 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
 
     // identify root node
     GraphNode *rootNode = nullptr;
+    size_t rootCount = 0;
     for (auto it = std::begin(_nodes); it != std::end(_nodes); ++it)
     {
         // search for nodes which have no incoming edges
         if ((*it)->GetNumberOfParents() == 0)
         {
 
-            if (rootNode == nullptr)
-            {
-                rootNode = (*it).get(); // assign current node to root
-            }
-            else
-            {
-                std::cout << "ERROR : Multiple root nodes detected" << std::endl;
-            }
+            rootNode = (*it).get();
+            ++rootCount;
         }
     }
 
+
+    if (rootCount != 1)
+    {
+        std::cout << "ERROR : Expected exactly one root node, found "
+                  << rootCount << "; chatbot not attached" << std::endl;
+        return;
+    }
 
     // create instance of chatbot
      ChatBot _chatBot("../images/chatbot.png");
@@ -234,15 +237,17 @@ void ChatLogic::SetChatbotHandle(ChatBot *chatbot)
 
 void ChatLogic::SendMessageToChatbot(std::string message)
 {
-    _chatBot->ReceiveMessageFromUser(message);
+    if (_chatBot)
+        _chatBot->ReceiveMessageFromUser(message);
 }
 
 void ChatLogic::SendMessageToUser(std::string message)
 {
-    _panelDialog->PrintChatbotResponse(message);
+    if (_panelDialog)
+        _panelDialog->PrintChatbotResponse(message);
 }
 
 wxBitmap *ChatLogic::GetImageFromChatbot()
 {
-    return _chatBot->GetImageHandle();
+    return _chatBot ? _chatBot->GetImageHandle() : nullptr;
 }
