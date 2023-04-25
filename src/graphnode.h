@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <cstddef>
 #include "chatbot.h"
 
 // forward declarations
@@ -36,8 +37,8 @@ public:
 
     // getter / setter
     int GetID() { return _id; }
-    int GetNumberOfChildEdges() { return _childEdges.size(); }
-    GraphEdge *GetChildEdgeAtIndex(int index);
+    size_t GetNumberOfChildEdges() { return _childEdges.size(); }
+    GraphEdge *GetChildEdgeAtIndex(size_t index);
     std::vector<std::string> GetAnswers() { return _answers; }
     int GetNumberOfParents() { return _parentEdges.size(); }
 
