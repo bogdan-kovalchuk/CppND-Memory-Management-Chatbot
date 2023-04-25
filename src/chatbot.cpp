@@ -160,6 +160,9 @@ void ChatBot::SetCurrentNode(GraphNode *node)
 
     // select a random node answer (if several answers should exist)
     std::vector<std::string> answers = _currentNode->GetAnswers();
+    if (answers.empty())
+        return; // a node with no answers has nothing to send to the user
+
     std::mt19937 generator(int(std::time(0)));
     std::uniform_int_distribution<int> dis(0, answers.size() - 1);
     std::string answer = answers.at(dis(generator));
