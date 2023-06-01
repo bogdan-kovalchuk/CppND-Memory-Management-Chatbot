@@ -5,11 +5,27 @@
 #include <iterator>
 #include <tuple>
 #include <algorithm>
+#include <charconv>
+#include <optional>
 
 #include "graphedge.h"
 #include "graphnode.h"
 #include "chatbot.h"
 #include "chatlogic.h"
+
+namespace
+{
+std::optional<int> ParseInteger(const std::string &text)
+{
+    int value = 0;
+    const char *begin = text.data();
+    const char *end = begin + text.size();
+    const auto result = std::from_chars(begin, end, value);
+    if (result.ec != std::errc{} || result.ptr != end)
+        return std::nullopt;
+    return value;
+}
+}
 
 
 ChatLogic::ChatLogic()
@@ -84,18 +100,22 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
             while (lineStr.size() > 0)
             {
                 // extract next token
-                int posTokenFront = lineStr.find("<");
-                int posTokenBack = lineStr.find(">");
-                if (posTokenFront < 0 || posTokenBack < 0)
+                size_t posTokenFront = lineStr.find("<");
+                size_t posTokenBack = posTokenFront == std::string::npos
+                    ? std::string::npos
+                    : lineStr.find(">", posTokenFront + 1);
+                if (posTokenFront == std::string::npos || posTokenBack == std::string::npos)
                     break; // quit loop if no complete token has been found
-                std::string tokenStr = lineStr.substr(posTokenFront + 1, posTokenBack - 1);
+                std::string tokenStr = lineStr.substr(
+                    posTokenFront + 1,
+                    posTokenBack - posTokenFront - 1);
 
                 // extract token type and info
-                int posTokenInfo = tokenStr.find(":");
+                size_t posTokenInfo = tokenStr.find(":");
                 if (posTokenInfo != std::string::npos)
                 {
                     std::string tokenType = tokenStr.substr(0, posTokenInfo);
-                    std::string tokenInfo = tokenStr.substr(posTokenInfo + 1, tokenStr.size() - 1);
+                    std::string tokenInfo = tokenStr.substr(posTokenInfo + 1);
 
                     // add token to vector
                     tokens.push_back(std::make_pair(tokenType, tokenInfo));
@@ -114,7 +134,13 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
                 if (idToken != tokens.end())
                 {
                     // extract id from token
-                    int id = std::stoi(idToken->second);
+                    const auto parsedId = ParseInteger(idToken->second);
+                    if (!parsedId)
+                    {
+                        std::cout << "Error: ID must be a valid integer. Line is ignored!" << std::endl;
+                        continue;
+                    }
+                    int id = *parsedId;
 
                     // node-based processing
                     if (type->second == "NODE")
@@ -151,9 +177,17 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
 
                         if (parentToken != tokens.end() && childToken != tokens.end())
                         {
+                            const auto parentId = ParseInteger(parentToken->second);
+                            const auto childId = ParseInteger(childToken->second);
+                            if (!parentId || !childId)
+                            {
+                                std::cout << "Error: PARENT and CHILD must be valid integers. Line is ignored!" << std::endl;
+                                continue;
+                            }
+
                             // get iterator on incoming and outgoing node via ID search
-                            auto parentNode = std::find_if(_nodes.begin(), _nodes.end(), [&parentToken](std::unique_ptr<GraphNode> &node) { return node->GetID() == std::stoi(parentToken->second); });
-                            auto childNode = std::find_if(_nodes.begin(), _nodes.end(), [&childToken](std::unique_ptr<GraphNode> &node) { return node->GetID() == std::stoi(childToken->second); });
+                            auto parentNode = std::find_if(_nodes.begin(), _nodes.end(), [parentId](std::unique_ptr<GraphNode> &node) { return node->GetID() == *parentId; });
+                            auto childNode = std::find_if(_nodes.begin(), _nodes.end(), [childId](std::unique_ptr<GraphNode> &node) { return node->GetID() == *childId; });
 
                             if (parentNode == _nodes.end() || childNode == _nodes.end())
                             {
