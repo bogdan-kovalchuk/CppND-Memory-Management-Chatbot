@@ -124,7 +124,7 @@ void ChatBot::ReceiveMessageFromUser(std::string message)
     for (size_t i = 0; i < _currentNode->GetNumberOfChildEdges(); ++i)
     {
         GraphEdge *edge = _currentNode->GetChildEdgeAtIndex(i);
-        for (auto keyword : edge->GetKeywords())
+        for (const auto &keyword : edge->GetKeywords())
         {
             EdgeDist ed{edge, ComputeLevenshteinDistance(keyword, message)};
             levDists.push_back(ed);
@@ -159,7 +159,7 @@ void ChatBot::SetCurrentNode(GraphNode *node)
     _currentNode = node;
 
     // select a random node answer (if several answers should exist)
-    std::vector<std::string> answers = _currentNode->GetAnswers();
+    const std::vector<std::string> &answers = _currentNode->GetAnswers();
     if (answers.empty())
         return; // a node with no answers has nothing to send to the user
 

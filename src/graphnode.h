@@ -39,7 +39,7 @@ public:
     int GetID() { return _id; }
     size_t GetNumberOfChildEdges() { return _childEdges.size(); }
     GraphEdge *GetChildEdgeAtIndex(size_t index);
-    std::vector<std::string> GetAnswers() { return _answers; }
+    const std::vector<std::string> &GetAnswers() const { return _answers; }
     int GetNumberOfParents() { return _parentEdges.size(); }
 
     // proprietary functions

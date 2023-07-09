@@ -27,7 +27,7 @@ public:
     void SetChildNode(GraphNode *childNode);
     void SetParentNode(GraphNode *parentNode);
     GraphNode *GetChildNode() { return _childNode; }
-    std::vector<std::string> GetKeywords() { return _keywords; }
+    const std::vector<std::string> &GetKeywords() const { return _keywords; }
 
     // proprietary functions
     void AddToken(std::string token);
