@@ -9,13 +9,8 @@ GraphNode::GraphNode(int id)
 
 GraphNode::~GraphNode()
 {
-    //// STUDENT CODE
-    ////
-
-    // delete _chatBot; 
-
-    ////
-    //// EOF STUDENT CODE
+    // _childEdges are owned via unique_ptr and _chatBot is a value member;
+    // both clean up automatically, no manual deletion needed.
 }
 
 void GraphNode::AddToken(std::string token)
