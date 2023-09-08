@@ -1,6 +1,7 @@
 #include "levenshtein.h"
 #include <algorithm>
 #include <cstddef>
+#include <vector>
 
 int computeLevenshteinDistance(std::string s1, std::string s2)
 {
@@ -13,7 +14,7 @@ int computeLevenshteinDistance(std::string s1, std::string s2)
     if (m == 0) return static_cast<int>(n);
     if (n == 0) return static_cast<int>(m);
 
-    size_t *costs = new size_t[n + 1];
+    std::vector<size_t> costs(n + 1);
 
     for (size_t k = 0; k <= n; k++)
         costs[k] = k;
@@ -42,7 +43,6 @@ int computeLevenshteinDistance(std::string s1, std::string s2)
     }
 
     int result = costs[n];
-    delete[] costs;
 
     return result;
 }

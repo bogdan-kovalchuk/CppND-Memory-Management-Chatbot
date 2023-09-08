@@ -2,6 +2,7 @@
 #include <random>
 #include <algorithm>
 #include <ctime>
+#include <vector>
 
 #include "chatlogic.h"
 #include "graphnode.h"
@@ -187,7 +188,7 @@ int ChatBot::ComputeLevenshteinDistance(std::string s1, std::string s2)
     if (n == 0)
         return m;
 
-    size_t *costs = new size_t[n + 1];
+    std::vector<size_t> costs(n + 1);
 
     for (size_t k = 0; k <= n; k++)
         costs[k] = k;
@@ -217,7 +218,6 @@ int ChatBot::ComputeLevenshteinDistance(std::string s1, std::string s2)
     }
 
     int result = costs[n];
-    delete[] costs;
 
     return result;
 }
