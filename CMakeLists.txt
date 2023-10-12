@@ -7,7 +7,13 @@ project(Membot)
 find_package(wxWidgets REQUIRED COMPONENTS core base)
 include(${wxWidgets_USE_FILE})
 
-file(GLOB project_SRCS src/*.cpp)
+set(project_SRCS
+    src/chatbot.cpp
+    src/chatgui.cpp
+    src/chatlogic.cpp
+    src/graphedge.cpp
+    src/graphnode.cpp
+)
 
 add_executable(membot ${project_SRCS})
 target_link_libraries(membot ${wxWidgets_LIBRARIES})
