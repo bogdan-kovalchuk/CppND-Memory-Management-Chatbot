@@ -8,6 +8,10 @@ project(Membot)
 find_package(wxWidgets REQUIRED COMPONENTS core base)
 include(${wxWidgets_USE_FILE})
 
+if(NOT MSVC)
+    add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
 set(project_SRCS
     src/chatbot.cpp
     src/chatgui.cpp
