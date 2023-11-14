@@ -36,3 +36,53 @@ The non-owning back-pointer breaks what would otherwise be a reference cycle.
 ## Thread safety
 
 None. ChatBot is designed for single-threaded GUI event-loop use.
+
+## Graph ownership
+
+`ChatLogic` exclusively owns every `GraphNode` via `std::vector<std::unique_ptr<GraphNode>>`.
+Each `GraphNode` exclusively owns its outgoing `GraphEdge`s via
+`std::vector<std::unique_ptr<GraphEdge>>` and holds non-owning raw pointers to
+its incoming edges (`_parentEdges`). Each `GraphEdge` holds non-owning raw
+pointers to its parent and child `GraphNode` (initialized to `nullptr` in the
+constructor, then set once via `SetParentNode`/`SetChildNode` while the graph
+is being built from the answer-graph file).
+
+`LoadAnswerGraphFromFile` guards against malformed input before wiring these
+pointers: an `EDGE` line referencing an unknown `PARENT`/`CHILD` id is skipped
+with a diagnostic instead of dereferencing `_nodes.end()`, and the root-node
+search bails out with a diagnostic instead of dereferencing a null `rootNode`
+when the file defines no unambiguous root.
+
+## Chatbot transfer protocol
+
+Each `GraphNode` holds its `ChatBot` by value. Moving the active chatbot
+between nodes goes through `GraphNode::MoveChatbotHere(ChatBot chatbot)`,
+which takes the bot by value and swaps it into `_chatBot`:
+
+```cpp
+void GraphNode::MoveChatbotHere(ChatBot chatbot)
+{
+    std::swap(_chatBot, chatbot);
+    _chatBot.SetCurrentNode(this);
+}
+```
+
+Callers must pass an rvalue so the by-value parameter binds to `ChatBot`'s
+move constructor (O(1), pointer transfer) rather than its copy constructor
+(O(W*H), deep-clones the avatar image). `ChatLogic::LoadAnswerGraphFromFile`
+does this explicitly with `std::move` when attaching the initial bot to the
+root node, and `GraphNode::MoveChatbotToNewNode` does the same when handing
+the bot off to the next node in the conversation:
+
+```cpp
+void GraphNode::MoveChatbotToNewNode(GraphNode *newNode)
+{
+    if (newNode)
+        newNode->MoveChatbotHere(std::move(_chatBot));
+}
+```
+
+Because the parameter is constructed by moving from `_chatBot` before the
+swap runs, self-transfer (`node.MoveChatbotToNewNode(&node)`) round-trips
+safely: the swap puts the (already-moved-from) member and the local parameter
+back the way they started.
