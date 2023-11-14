@@ -33,6 +33,34 @@ Your goal is to use the course knowledge to optimize the ChatBot program from a 
 3. Compile: `cmake .. && make`
 4. Run it: `./membot`.
 
+## Running the Tests
+
+The `tests/` directory is a self-contained CMake project (`ChatbotTests`) that
+does not depend on wxWidgets, so it builds even on a machine without the GUI
+toolchain installed:
+
+```
+cd tests
+mkdir build && cd build
+cmake .. && cmake --build .
+ctest
+```
+
+Each test binary can also be run directly (e.g. `./test_exclusive_handle`).
+On a toolchain without a `make`/`ninja` backend available to CMake, compile
+and run an individual test with the compiler directly instead, matching the
+flags in `tests/CMakeLists.txt`, e.g.:
+
+```
+g++ -std=c++17 -Wall -Wextra -Wpedantic -Werror -UNDEBUG -Isrc tests/test_exclusive_handle.cpp -o test_exclusive_handle
+```
+
+Building `membot` itself (the root `CMakeLists.txt`) still requires wxWidgets
+as described above. On Windows with the MSYS2 MinGW64 toolchain, install the
+matching `mingw-w64-x86_64-wxwidgets3.2-msw` package before configuring the
+root project. CMake stops at `find_package(wxWidgets)` when that dependency is
+not installed for the selected compiler.
+
 ## Project Task Details
 
 Currently, the program crashes when you close the window. There is a small bug hidden somewhere, which has something to do with improper memory management. So your first warm-up task will be to find this bug and remove it. This should familiarize you with the code and set you up for the rest of the upcoming tasks. Have fun debugging!
